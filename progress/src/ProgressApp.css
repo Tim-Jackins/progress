@@ -1,0 +1,60 @@
+.upgm_progressbar {
+  margin-bottom: 40px;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+
+}
+
+.upgm_meter {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  margin-bottom: 20px;
+
+}
+
+.upgm_progressbar_progress {
+  height: 100%;
+  color: #fff;
+  text-align: right;
+  line-height: 22px;
+  width: 0;
+  border-radius: 9px;
+  -webkit-box-shadow: 0 2px 2px #333;
+  box-shadow: 0 2px 2px #333;
+  position: absolute;
+  top: 0px;
+}
+
+.upgm_progressbar_outer {
+
+  height: 22px;
+  border-radius: 10px;
+  background: #e6e5e2;
+  -webkit-box-shadow: 0 -1px 1px #c0bfbc inset;
+  box-shadow: 0 -1px 1px #c0bfbc inset;
+  position: relative;
+
+}
+
+.upgm_progressbar_goal .upgm_progressbar_amount {
+  color: #333;
+  float: right;
+  line-height: 22px;
+}
+
+.upgm_progressbar_progress .upgm_progressbar_amount {
+  color: #333;
+  position: absolute;
+  top: 30px;
+  text-align: left;
+}
+
+.upgm_progressbar_progress {
+  color: #fff;
+  text-align: right;
+  line-height: 22px;
+
+}

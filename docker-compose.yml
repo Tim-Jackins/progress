@@ -1,0 +1,43 @@
+version: '2'
+
+services:
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    container_name: nginx-proxy
+    ports:
+      - "80"
+    volumes:
+      - /jack/progress/certs:/etc/nginx/certs:ro
+      - /etc/nginx/vhost.d
+      - /usr/share/nginx/html
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+#    labels:
+#      - "com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy"
+#  https-helper:
+#    image: jrcs/letsencrypt-nginx-proxy-companion
+#    container_name: https-helper
+#    volumes:
+#      - /home/jack/progress/certs:/etc/nginx/certs:rw
+#      - /var/run/docker.sock:/var/run/docker.sock:ro
+#    volumes_from:
+#      - nginx-proxy:rw
+#    depends_on:
+#      - nginx-proxy
+  progress:
+    container_name: progress_server
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: progress_server_image
+    #stdin_open: true
+    #tty: true
+    ports:
+      - "80:80"
+    environment:
+      - VIRTUAL_HOST=jack.jacktimmins.com
+#      - LETSENCRYPT_HOST=jack.jacktimmins.com
+#      - LETSENCRYPT_EMAIL=jack@jacktimmins.com
+    depends_on:
+      - nginx-proxy
+#      - https-helper
+    command: python3 progress.py

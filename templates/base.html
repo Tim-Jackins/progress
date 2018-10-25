@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>BACON Fundraiser</title>
+	
+	<!--<meta name=viewport content='width=700'>-->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" href="/static/styles/style.css">
+	<script src="/static/js/md5.min.js"></script>
+	<script src="/static/js/jquery-3.3.1.min.js"></script>
+
+	<script>
+		$(document).ready(function () {
+			// console.log(window.location.href);
+			if (window.location.href.substring(21, 28) == '/class/') {
+				$("#class").attr("class", "active");
+			} else if (window.location.href.substring(21, 27) == '/home/') {
+				$("#home").attr("class", "active");
+			} else if (window.location.href.substring(21, 28) == '/login/') {
+				$("#login").attr("class", "active");
+			} else if (window.location.href.substring(21, 29) == '/logout/') {
+				$("#logout").attr("class", "active");
+			}
+		});
+	</script>
+</head>
+
+<body>
+	<div id="menu">
+		<ul>
+			<li>
+				<a href="/" id="home">Home</a>
+			</li>
+
+			{% if current_user.is_anonymous %}
+			<li>
+				<a href="/settings/" id="settings">settings</a>
+			</li>
+			{% endif %}
+
+			<div id="logger">
+				{% if current_user.is_anonymous %}
+				<li>
+					<a href="/login/" id="login">Login</a>
+				</li>
+				{% else %}
+				<li>
+					Welcome {{ current_user.id }}
+				</li>
+				<li>
+					<a href="/logout/" id="logout">Logout</a>
+				</li>
+				{% endif %}
+			</div>
+		</ul>
+	</div>
+	{% with messages = get_flashed_messages() %} {% if messages %}
+	<div class="alert">
+		{% for message in messages %}
+		<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+		<strong>Error:</strong> {{ message }} {% endfor %} 
+	</div> {% endif %} {% endwith %}
+	{% block content %}{% endblock %}
+</body>
+
+</html>
