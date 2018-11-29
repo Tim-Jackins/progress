@@ -1,10 +1,10 @@
 FROM jfloff/alpine-python:3.6-slim
-#FROM python:3.4-alpine
+# This guys alpython images are slim and functional check them out at https://github.com/jfloff/alpine-python
 
 WORKDIR /progress
 ADD . /progress/
 
-EXPOSE 80
+EXPOSE 443
 
 # Change time zone
 

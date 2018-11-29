@@ -5,39 +5,48 @@ services:
     image: jwilder/nginx-proxy
     container_name: nginx-proxy
     ports:
-      - "80"
+      - "80:80"
+      - "443:443"
     volumes:
-      - /jack/progress/certs:/etc/nginx/certs:ro
-      - /etc/nginx/vhost.d
-      - /usr/share/nginx/html
+      - /home/jack/progress/certs:/etc/nginx/certs:ro           # Replace with your path
+      - /home/jack/progress/vhost.d:/etc/nginx/vhost.d:rw       # Replace with your path
+      - /home/jack/progress/challenge:/usr/share/nginx/html:rw  # Replace with your path
       - /var/run/docker.sock:/tmp/docker.sock:ro
-#    labels:
-#      - "com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy"
-#  https-helper:
-#    image: jrcs/letsencrypt-nginx-proxy-companion
-#    container_name: https-helper
-#    volumes:
-#      - /home/jack/progress/certs:/etc/nginx/certs:rw
-#      - /var/run/docker.sock:/var/run/docker.sock:ro
-#    volumes_from:
-#      - nginx-proxy:rw
-#    depends_on:
-#      - nginx-proxy
+    labels:
+      - "com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy=true"
+    networks:
+      - progress-net
+  ssl-helper:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    container_name: ssl-helper
+    depends_on:
+      - "nginx-proxy"
+    volumes:
+      - /home/jack/progress/certs:/etc/nginx/certs:rw          # Replace with your path
+      - /home/jack/progress/vhost.d:/etc/nginx/vhost.d:rw      # Replace with your path
+      - /home/jack/progress/challenge:/usr/share/nginx/html:rw # Replace with your path
+      - /var/run/docker.sock:/tmp/docker.sock:ro 
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - NGINX_PROXY_CONTAINER=nginx-proxy
+    networks:
+      - progress-net
   progress:
     container_name: progress_server
     build:
       context: .
       dockerfile: Dockerfile
     image: progress_server_image
-    #stdin_open: true
-    #tty: true
-    ports:
-      - "80:80"
     environment:
-      - VIRTUAL_HOST=jack.jacktimmins.com
-#      - LETSENCRYPT_HOST=jack.jacktimmins.com
-#      - LETSENCRYPT_EMAIL=jack@jacktimmins.com
+      - VIRTUAL_HOST=jack.jacktimmins.com       # Replace with whatever domain you have pointing to the server
+      - LETSENCRYPT_HOST=jack.jacktimmins.com   # Use the same domain as VIRTUAL_HOST
+      - LETSENCRYPT_EMAIL=jack@jacktimmins.com  # Use whatever email you want
     depends_on:
-      - nginx-proxy
-#      - https-helper
+      - ssl-helper
+    networks:
+      - progress-net
     command: python3 progress.py
+
+networks:
+  progress-net:
+    driver: bridge

@@ -1,0 +1,246 @@
+// global vars
+$milestone-base-color: #cccccc;
+$milestone-progress-color: #bbbbbb;
+$milestone-10-color: #004b6b;
+$milestone-25-color: #015e87;
+$milestone-50-color: #25aae1;
+$milestone-80-color: #82d5f8;
+$milestone-100-color: #1DE86F;
+$tooltip-color: #25aae1;
+
+body {
+  font-family: inherit, "Myriad Pro", Ubuntu;
+  font-style: normal;
+  font-weight: normal;
+}
+
+/*Tooltip stuff*/
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  /*border-bottom: 1px dotted black;*/
+
+}
+
+.tooltip .tooltiptext.bottom {
+  visibility: hidden;
+  width: 150px;
+  background-color: $tooltip-color;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  top: 150%;
+  left: 50%;
+  margin-left: -60px;
+  font-size: 0.8rem;
+
+  /* Fade in tooltip - takes 1 second to go from 0% to 100% opac: */
+  opacity: 0;
+  transition: opacity 1s;
+}
+
+.tooltip .tooltiptext.bottom::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 40%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent $tooltip-color transparent;
+}
+
+.tooltip:hover .tooltiptext.bottom {
+  visibility: visible;
+  opacity: 1;
+}
+
+.toplabel {
+/*  width: 400px;
+  height: 150px;
+  border: 1px solid #c3c3c3;*/
+  width: 90%;
+  display: -webkit-flex; /* Safari */
+  display: flex;
+}
+
+.cornerbox.left {
+  width: 90px;
+  background-color: #25aae1;
+  color: #ffffff;
+  text-align: center;
+  border-color: #25aae1 transparent transparent transparent;
+  border-style: solid;
+  border-radius: 6px 6px 6px 0px;
+  border-width: 5px;
+  position: relative;
+  display: inline-block;
+}
+
+.cornerbox.left:before {
+  content: "";
+  position: absolute;
+  left: 0%;
+  top: 22px;
+  margin-left: -5px;
+  border-width: 7px;
+  border-style: solid;
+  border-color: #25aae1 transparent transparent transparent;
+}
+
+.cornerbox.right {
+  width: 90px;
+  background-color: #25aae1;
+  color: #ffffff;
+  text-align: center;
+  border-color: #25aae1 transparent transparent transparent;
+  border-style: solid;
+  border-radius: 6px 6px 0px 6px;
+  border-width: 5px;
+  position: relative;
+  display: inline-block;
+}
+
+.cornerbox.right:before {
+  content: "";
+  position: absolute;
+  left: 95%;
+  top: 22px;
+  margin-left: -5px;
+  border-width: 7px;
+  border-style: solid;
+  border-color: #25aae1 transparent transparent transparent;
+}
+
+.vefs-milestone-wrapper {
+  $component-height: 80px;
+  $line-height: $component-height / 10;
+  $dot-size: $line-height * 3.5;
+
+  .milestone-container {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    width: 90%;
+    height: $component-height;
+
+    .chart-container {
+      display: flex;
+      flex-flow: row;
+      align-items: center;
+      flex: 1 50%;
+
+      .line-container {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        height: $dot-size;
+
+        .line {
+          align-self: center;
+          position: absolute;
+          top: $dot-size / 2;
+          transform: translateY(-50%);
+          order: 1;
+          width: 100%;
+          height: $line-height;
+          background-color: $milestone-base-color;
+          background-color: rgba($milestone-base-color, 0.5);
+
+          &.left {
+            order: 0;
+            background-color: $milestone-progress-color;
+          }
+        }
+      }
+
+      .dot-container {
+        position: absolute;
+        height: $dot-size;
+        width: 100%;
+
+        .dot {
+          position: absolute;
+          width: $dot-size;
+          height: $dot-size;
+          border-radius: 50%;
+          background-color: $milestone-base-color;
+          transform: translateX(-50%);
+          transition: all 0.25s ease-out;
+
+          &.completed {
+            background-color: $milestone-progress-color;
+          }
+        }
+      }
+
+    }
+
+    .label-container {
+      display: flex;
+      flex-flow: row nowrap;
+      align-items: flex-start;
+      flex: 1 50%;
+
+      .label {
+        position: relative;
+        font-size: 1.0rem;
+        font-weight: 600;
+        color: $milestone-base-color;
+
+        &.colored {
+          color: $milestone-progress-color;
+        }
+      }
+    }
+
+    .milestones {
+      position: absolute;
+      transform: translate(-50%, 0);
+
+      @mixin milestone($mark, $color) {
+        &__#{$mark} {
+          left: #{$mark + '%'};
+
+          .dot {
+            &.colored {
+              background-color: rgba($color, 1);
+              transition: all 0.25s ease-out;
+            }
+          }
+        }
+      }
+
+      &.milestone {
+
+        // generate position and color of each milestone value
+        @for $i from 0 to 101 {
+          @if $i>0 and $i <=20 {
+            @include milestone($i, $milestone-10-color);
+          }
+
+          @if $i>20 and $i <=40 {
+            @include milestone($i, $milestone-25-color);
+          }
+
+          @if $i>40 and $i <=60 {
+            @include milestone($i, $milestone-50-color);
+          }
+
+          @if $i>60 and $i <=80 {
+            @include milestone($i, $milestone-80-color);
+          }
+
+          @if $i>80 and $i <=100 {
+            @include milestone($i, $milestone-100-color);
+          }
+        }
+      }
+    }
+  }
+}
